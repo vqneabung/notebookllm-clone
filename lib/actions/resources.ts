@@ -35,12 +35,11 @@ export const createResource = async (input: NewResourceParams) => {
 
     console.log("Resource and embeddings created with ID:", resource.id);
 
-    return "Resource successfully created and embedded.";
+    return true;
   } catch (e) {
     if (e instanceof Error) {
       console.error("Error creating resource:", e.message);
-      return e.message;
+      return false;
     }
-    throw new Error("An unknown error occurred while creating resource.");
   }
 };

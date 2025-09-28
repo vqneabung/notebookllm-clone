@@ -56,8 +56,13 @@ export async function POST(req: Request) {
 
     // luu vao embedding va db
     for (const [i, text] of pdfTexts.entries()) {
-      var result = await createResource({ content: text });
-      console.log("Result:", result);
+      var result = await createResource({ content: safeName[i] + "\n" + text });
+      if (!result) {
+        return Response.json(
+          { message: "Failed to create resource from file" },
+          { status: 500 }
+        );
+      }
     }
 
     return Response.json(

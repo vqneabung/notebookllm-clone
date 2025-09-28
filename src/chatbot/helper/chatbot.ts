@@ -1,5 +1,6 @@
 import {
   convertToModelMessages,
+  stepCountIs,
   StopCondition,
   streamText,
   tool,
@@ -9,6 +10,7 @@ import {
 import { qwen3 } from "./model/ollama";
 import z from "zod";
 import { findRelevantContent } from "../../../lib/ai/embedding";
+import { geminiFlashLite } from "../helper/model/google";
 
 const SYSTEM_PROMPT = `You are a helpful assistant. Check your knowledge base before answering any questions.
     Only respond to questions using information from tool calls.
@@ -39,9 +41,10 @@ export function StreamingTextGenerationFromMessagesToResult(
   messages: UIMessage[]
 ) {
   const result = streamText({
-    model: qwen3,
+    model: geminiFlashLite,
     system: SYSTEM_PROMPT,
     messages: convertToModelMessages(messages),
+    stopWhen: stepCountIs(10),
     tools: {
       getInformation: tool({
         description: `get information from your knowledge base to answer questions.`,
