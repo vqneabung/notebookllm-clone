@@ -1,4 +1,4 @@
-import { LanguageModel } from "ai";
+import { EmbeddingModel, LanguageModel } from "ai";
 import { createOllama } from "ollama-ai-provider-v2";
 
 export const ollama = createOllama({
@@ -7,3 +7,5 @@ export const ollama = createOllama({
 export const qwen3: LanguageModel = ollama("qwen3:0.6b");
 
 export const gemma3: LanguageModel = ollama("gemma3:1b");
+
+export const embedding : EmbeddingModel = ollama.textEmbeddingModel("nomic-embed-text:latest");

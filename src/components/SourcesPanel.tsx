@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Search } from 'lucide-react';
 import SourceItem from './SourceItem';
+import UploadModal from './UploadModal';
 
 interface Source {
   id: string;
@@ -13,16 +15,23 @@ interface SourcesPanelProps {
   onToggleSource: (id: string) => void;
   onToggleAll: () => void;
   allChecked: boolean;
+  onAddSources: (files: File[]) => void;
 }
 
-export default function SourcesPanel({ sources, onToggleSource, onToggleAll, allChecked }: SourcesPanelProps) {
+export default function SourcesPanel({ sources, onToggleSource, onToggleAll, allChecked, onAddSources }: SourcesPanelProps) {
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   return (
     <div className="w-80 bg-background border-r flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b">
         <h2 className="text-lg font-semibold mb-3">Sources</h2>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1"
+            onClick={() => setIsUploadModalOpen(true)}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Add
           </Button>
@@ -59,6 +68,12 @@ export default function SourcesPanel({ sources, onToggleSource, onToggleAll, all
           />
         ))}
       </div>
+
+      <UploadModal 
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUpload={onAddSources}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { StreamingTextGenerationFromMessagesToResult } from '@/chatbot/helper/chatbot.helper';
+import { StreamingTextGenerationFromMessagesToResult } from '@/chatbot/helper/chatbot';
 import { convertToModelMessages, streamText, UIMessage } from 'ai';
 
 // Allow streaming responses up to 30 seconds

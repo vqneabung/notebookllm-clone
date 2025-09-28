@@ -7,6 +7,10 @@ import {
 } from "ai";
 import { qwen3 } from "./model/ollama";
 
+const SYSTEM_PROMPT = `You are a helpful assistant. Check your knowledge base before answering any questions.
+    Only respond to questions using information from tool calls.
+    if no relevant information is found in the tool calls, respond, "Sorry, I don't know."`;
+
 export async function StreamingTextGeneration(prompt: string) {
   const result = streamText({
     model: qwen3,
@@ -29,10 +33,11 @@ export function StreamingTextGenerationFromPromptToResult(prompt: string) {
 }
 
 export function StreamingTextGenerationFromMessagesToResult(
-  messages: UIMessage[],
+  messages: UIMessage[]
 ) {
   const result = streamText({
     model: qwen3,
+    system: SYSTEM_PROMPT,
     messages: convertToModelMessages(messages),
   });
 
@@ -42,7 +47,7 @@ export function StreamingTextGenerationFromMessagesToResult(
 export function StreamingTextGenerationWithToolFromMessagesToResult(
   messages: UIMessage[],
   tools: ToolSet,
-  stopWhen?: StopCondition<ToolSet>,
+  stopWhen?: StopCondition<ToolSet>
 ) {
   const result = streamText({
     model: qwen3,
