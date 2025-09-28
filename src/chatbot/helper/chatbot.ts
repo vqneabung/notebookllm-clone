@@ -2,10 +2,13 @@ import {
   convertToModelMessages,
   StopCondition,
   streamText,
+  tool,
   ToolSet,
   UIMessage,
 } from "ai";
 import { qwen3 } from "./model/ollama";
+import z from "zod";
+import { findRelevantContent } from "../../../lib/ai/embedding";
 
 const SYSTEM_PROMPT = `You are a helpful assistant. Check your knowledge base before answering any questions.
     Only respond to questions using information from tool calls.
@@ -18,7 +21,7 @@ export async function StreamingTextGeneration(prompt: string) {
   });
 
   for await (const textPart of result.textStream) {
-    console.log(textPart);
+    // console.log(textPart);
     return textPart;
   }
 }
@@ -39,6 +42,15 @@ export function StreamingTextGenerationFromMessagesToResult(
     model: qwen3,
     system: SYSTEM_PROMPT,
     messages: convertToModelMessages(messages),
+    tools: {
+      getInformation: tool({
+        description: `get information from your knowledge base to answer questions.`,
+        inputSchema: z.object({
+          question: z.string().describe("the users question"),
+        }),
+        execute: async ({ question }) => findRelevantContent(question),
+      }),
+    },
   });
 
   return result;

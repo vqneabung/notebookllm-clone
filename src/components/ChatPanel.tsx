@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 import { Send } from 'lucide-react';
 import { UIMessage } from '@ai-sdk/react';
 import { useState } from 'react';
@@ -14,15 +15,18 @@ interface ChatPanelProps {
   onSendMessage: (message: string) => void;
   status: string;
   onAddSources: (files: File[]) => void;
+  isUploading?: boolean;
+  uploadProgress?: string;
+  uploadPercentage?: number;
 }
 
-export default function ChatPanel({ hasSources, sourceCount, messages, onSendMessage, status, onAddSources }: ChatPanelProps) {
+export default function ChatPanel({ hasSources, sourceCount, messages, onSendMessage, status, onAddSources, isUploading = false, uploadProgress = '', uploadPercentage = 0 }: ChatPanelProps) {
   const [input, setInput] = useState('');
   const [isChatMode, setIsChatMode] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim() && status !== 'in_progress') {
+    if (input.trim() && status !== 'in_progress' && !isUploading) {
       onSendMessage(input);
       setInput('');
       setIsChatMode(true); // Switch to chat mode when user sends first message
@@ -30,15 +34,22 @@ export default function ChatPanel({ hasSources, sourceCount, messages, onSendMes
   };
 
   const handleQuickQuestion = (question: string) => {
-    onSendMessage(question);
-    setIsChatMode(true);
+    if (!isUploading) {
+      onSendMessage(question);
+      setIsChatMode(true);
+    }
   };
 
   return (
     <div className="flex-1 flex flex-col bg-background h-full overflow-hidden">
       {/* Main Content */}
       {!hasSources ? (
-        <EmptyState onAddSources={onAddSources} />
+        <EmptyState 
+          onAddSources={onAddSources} 
+          isUploading={isUploading}
+          uploadProgress={uploadProgress}
+          uploadPercentage={uploadPercentage}
+        />
       ) : (
         <>
           <div className="flex-1 min-h-0 overflow-hidden">
@@ -56,21 +67,33 @@ export default function ChatPanel({ hasSources, sourceCount, messages, onSendMes
           {/* Chat Input - Only show when has sources */}
           <div className="border-t p-4 flex-shrink-0">
             <div className="max-w-4xl mx-auto">
+              {/* Upload Progress Indicator */}
+              {isUploading && (
+                <div className="mb-4 p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">{uploadProgress}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">{uploadPercentage}%</span>
+                  </div>
+                  <Progress value={uploadPercentage} className="h-2" />
+                </div>
+              )}
+              
               <form onSubmit={handleSubmit}>
                 <div className="relative">
                   <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Start typing..."
+                    placeholder={isUploading ? "Processing files..." : "Start typing..."}
                     className="pr-20 py-3"
-                    disabled={status === 'in_progress'}
+                    disabled={status === 'in_progress' || isUploading}
                   />
                   <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">{sourceCount} source{sourceCount > 1 ? 's' : ''}</span>
                     <Button 
                       type="submit" 
                       size="sm"
-                      disabled={!input.trim() || status === 'in_progress'}
+                      disabled={!input.trim() || status === 'in_progress' || isUploading}
                     >
                       <Send className="w-4 h-4" />
                     </Button>
@@ -78,8 +101,8 @@ export default function ChatPanel({ hasSources, sourceCount, messages, onSendMes
                 </div>
               </form>
               
-              {/* Suggested Questions - Only show when not in chat mode */}
-              {!isChatMode && (
+              {/* Suggested Questions - Only show when not in chat mode and not uploading */}
+              {!isChatMode && !isUploading && (
                 <div className="flex gap-2 mt-3 overflow-x-auto">
                   <Button 
                     variant="outline" 

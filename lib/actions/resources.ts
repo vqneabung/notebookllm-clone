@@ -7,28 +7,40 @@ import {
 } from "../db/schema/resources";
 import { db } from "../db";
 import { generateEmbeddings } from "../ai/embedding";
-import { embeddings as embeddingsTable } from "../db/schema/embeddings";
+import { embeddings } from "../db/schema/embeddings";
 
 export const createResource = async (input: NewResourceParams) => {
   try {
     const { content } = insertResourceSchema.parse(input);
+
+    console.log("Inserting resource into database...");
 
     const [resource] = await db
       .insert(resources)
       .values({ content })
       .returning();
 
-    const embeddings = await generateEmbeddings(content);
-    await db.insert(embeddingsTable).values(
-      embeddings.map((embedding) => ({
+    console.log("Resource inserted with ID:", resource.id);
+
+    const embeddingResult = await generateEmbeddings(content);
+    console.log("Generated embeddings count:", embeddingResult.length);
+
+    await db.insert(embeddings).values(
+      embeddingResult.map((embedding) => ({
         resourceId: resource.id,
-        ...embedding,
+        content: embedding.content ?? "",
+        embedding: embedding.embedding ?? [],
       }))
     );
 
+    console.log("Resource and embeddings created with ID:", resource.id);
+
     return "Resource successfully created and embedded.";
   } catch (e) {
-    if (e instanceof Error)
-      return e.message.length > 0 ? e.message : "Error, please try again.";
+    if (e instanceof Error) {
+      console.error("Error creating resource:", e.message);
+      return e.message;
+    }
+    throw new Error("An unknown error occurred while creating resource.");
   }
 };

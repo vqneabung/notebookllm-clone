@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { Upload } from 'lucide-react';
 import UploadModal from './UploadModal';
 
 interface EmptyStateProps {
   onAddSources: (files: File[]) => void;
+  isUploading?: boolean;
+  uploadProgress?: string;
+  uploadPercentage?: number;
 }
 
-export default function EmptyState({ onAddSources }: EmptyStateProps) {
+export default function EmptyState({ onAddSources, isUploading = false, uploadProgress = '', uploadPercentage = 0 }: EmptyStateProps) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   return (
     <div className="h-full flex flex-col bg-gray-900">
@@ -24,16 +28,29 @@ export default function EmptyState({ onAddSources }: EmptyStateProps) {
         </div>
 
         {/* Title */}
-        <h2 className="text-xl font-medium mb-6 text-white">Add a source to get started</h2>
+        <h2 className="text-xl font-medium mb-6 text-white">
+          {isUploading ? "Processing your source..." : "Add a source to get started"}
+        </h2>
 
-        {/* Upload Button */}
-        <Button 
-          variant="outline" 
-          className="bg-transparent border-gray-600 text-white hover:bg-gray-700 hover:text-white"
-          onClick={() => setIsUploadModalOpen(true)}
-        >
-          Upload a source
-        </Button>
+        {/* Upload Progress or Button */}
+        {isUploading ? (
+          <div className="w-full max-w-md">
+            <div className="flex items-center justify-center gap-3 text-gray-300 mb-4">
+              <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+              <span className="text-sm">{uploadProgress}</span>
+              <span className="text-xs">{uploadPercentage}%</span>
+            </div>
+            <Progress value={uploadPercentage} className="h-2 bg-gray-700" />
+          </div>
+        ) : (
+          <Button 
+            variant="outline" 
+            className="bg-transparent border-gray-600 text-white hover:bg-gray-700 hover:text-white"
+            onClick={() => setIsUploadModalOpen(true)}
+          >
+            Upload a source
+          </Button>
+        )}
       </div>
 
       {/* Input Area */}
@@ -60,7 +77,7 @@ export default function EmptyState({ onAddSources }: EmptyStateProps) {
       </div>
 
       <UploadModal 
-        isOpen={isUploadModalOpen}
+        isOpen={isUploadModalOpen && !isUploading}
         onClose={() => setIsUploadModalOpen(false)}
         onUpload={onAddSources}
       />
