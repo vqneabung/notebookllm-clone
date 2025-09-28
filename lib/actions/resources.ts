@@ -8,16 +8,21 @@ import {
 import { db } from "../db";
 import { generateEmbeddings } from "../ai/embedding";
 import { embeddings } from "../db/schema/embeddings";
+import { toSql } from "pgvector";
 
-export const createResource = async (input: NewResourceParams) => {
+
+export const createResource = async (fileName: string, input: NewResourceParams) => {
   try {
+
     const { content } = insertResourceSchema.parse(input);
 
     console.log("Inserting resource into database...");
 
+    const inputWithFileName =  content + `\n\nSource: ${fileName}`;
+
     const [resource] = await db
       .insert(resources)
-      .values({ content })
+      .values({ content: inputWithFileName })
       .returning();
 
     console.log("Resource inserted with ID:", resource.id);
@@ -29,7 +34,7 @@ export const createResource = async (input: NewResourceParams) => {
       embeddingResult.map((embedding) => ({
         resourceId: resource.id,
         content: embedding.content ?? "",
-        embedding: embedding.embedding ?? [],
+        embedding: embedding.embedding,
       }))
     );
 

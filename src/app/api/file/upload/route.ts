@@ -17,9 +17,7 @@ export async function POST(req: Request) {
       files.map(async (file) => Buffer.from(await file.arrayBuffer()))
     );
 
-    const safeName = files
-      .map((file) => file.name.replace(/\s+/g, "_"))
-      .join("-");
+    const fileName = files.map((file) => file.name);
     // // thư mục upload
     // const uploadDir = path.join(process.cwd(), "public", "uploads");
     // // đảm bảo thư mục tồn tại
@@ -56,7 +54,7 @@ export async function POST(req: Request) {
 
     // luu vao embedding va db
     for (const [i, text] of pdfTexts.entries()) {
-      var result = await createResource({ content: safeName[i] + "\n" + text });
+      var result = await createResource(fileName[i], { content: text });
       if (!result) {
         return Response.json(
           { message: "Failed to create resource from file" },
@@ -66,7 +64,7 @@ export async function POST(req: Request) {
     }
 
     return Response.json(
-      { message: "Uploaded", filename: safeName },
+      { message: "Uploaded", filename: fileName },
       { status: 201 }
     );
   } catch (e) {

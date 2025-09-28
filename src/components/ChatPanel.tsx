@@ -26,7 +26,7 @@ export default function ChatPanel({ hasSources, sourceCount, messages, onSendMes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim() && status !== 'in_progress' && !isUploading) {
+    if (input.trim() && status !== 'streaming' && !isUploading) {
       onSendMessage(input);
       setInput('');
       setIsChatMode(true); // Switch to chat mode when user sends first message

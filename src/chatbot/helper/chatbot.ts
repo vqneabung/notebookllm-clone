@@ -13,7 +13,8 @@ import { findRelevantContent } from "../../../lib/ai/embedding";
 import { geminiFlashLite } from "../helper/model/google";
 
 const SYSTEM_PROMPT = `You are a helpful assistant. Check your knowledge base before answering any questions.
-    Only respond to questions using information from tool calls.
+    Only respond to questions using information from tool calls.'
+    Try to use the tool "getInformation" to get relevant information from your knowledge base to answer questions.
     if no relevant information is found in the tool calls, respond, "Sorry, I don't know."`;
 
 export async function StreamingTextGeneration(prompt: string) {
@@ -41,10 +42,10 @@ export function StreamingTextGenerationFromMessagesToResult(
   messages: UIMessage[]
 ) {
   const result = streamText({
-    model: geminiFlashLite,
+    model: qwen3,
     system: SYSTEM_PROMPT,
     messages: convertToModelMessages(messages),
-    stopWhen: stepCountIs(10),
+    stopWhen: stepCountIs(100),
     tools: {
       getInformation: tool({
         description: `get information from your knowledge base to answer questions.`,
