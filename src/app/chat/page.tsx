@@ -6,8 +6,9 @@ import { useState } from "react";
 import SourcesPanel from "@/components/SourcesPanel";
 import ChatPanel from "@/components/ChatPanel";
 import FlashcardPanel from "@/components/FlashcardPanel";
+import useStateRef from "react-usestateref";
 
-interface Source {
+export interface Source {
   id: string;
   title: string;
   checked: boolean;
@@ -21,7 +22,7 @@ export default function ChatPage() {
   });
 
   // State for sources
-  const [sources, setSources] = useState<Source[]>([
+  const [sources, setSources] = useStateRef<Source[]>([
     // For demo purposes, you can uncomment the line below to show content with sources
   ]);
 
@@ -151,7 +152,7 @@ export default function ChatPage() {
       />
 
       {/* Flashcard Panel */}
-      <FlashcardPanel />
+      <FlashcardPanel sources={sources} />
     </div>
   );
 }

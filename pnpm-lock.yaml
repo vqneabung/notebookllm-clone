@@ -92,6 +92,9 @@ importers:
       react-dropzone:
         specifier: ^14.3.8
         version: 14.3.8(react@19.1.0)
+      react-flashcard:
+        specifier: ^1.0.3
+        version: 1.0.3(react@19.1.0)
       react-quizlet-flashcard:
         specifier: ^4.0.22
         version: 4.0.22(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1485,6 +1488,12 @@ packages:
     peerDependencies:
       react: '>= 16.8 || 18.0.0'
 
+  react-flashcard@1.0.3:
+    resolution: {integrity: sha512-uz2/MeBJLyj4dme5txSPfZbHEO57rZ0Rgscq+CMUX46UJrISuChhx62OD6M8IjNlHDpeXUmJu7Q5tgdEtAze4Q==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^16.13.1
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -2637,6 +2646,10 @@ snapshots:
       attr-accept: 2.2.5
       file-selector: 2.1.2
       prop-types: 15.8.1
+      react: 19.1.0
+
+  react-flashcard@1.0.3(react@19.1.0):
+    dependencies:
       react: 19.1.0
 
   react-is@16.13.1: {}
