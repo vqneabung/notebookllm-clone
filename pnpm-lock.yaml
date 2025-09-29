@@ -92,6 +92,9 @@ importers:
       react-dropzone:
         specifier: ^14.3.8
         version: 14.3.8(react@19.1.0)
+      react-quizlet-flashcard:
+        specifier: ^4.0.22
+        version: 4.0.22(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-usestateref:
         specifier: ^1.0.9
         version: 1.0.9(react@19.1.0)
@@ -1485,6 +1488,12 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
+  react-quizlet-flashcard@4.0.22:
+    resolution: {integrity: sha512-YbkAY4BWi8anBNinqjuLIK6cLddlFw6iRgzcoJEXgXBR3Of/cO0uxfPN9Pr3+fO0fUTk8d1hc/tXQAupL+LhcQ==}
+    peerDependencies:
+      react: ^19.1.0
+      react-dom: ^19.1.0
+
   react-remove-scroll-bar@2.3.8:
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
     engines: {node: '>=10'}
@@ -2631,6 +2640,11 @@ snapshots:
       react: 19.1.0
 
   react-is@16.13.1: {}
+
+  react-quizlet-flashcard@4.0.22(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   react-remove-scroll-bar@2.3.8(@types/react@19.1.14)(react@19.1.0):
     dependencies:

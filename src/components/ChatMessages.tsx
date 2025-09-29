@@ -107,7 +107,7 @@ export default function ChatMessages({ messages, status }: ChatMessagesProps) {
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
-          {status === 'streaming' && (
+          {status === 'streaming' || status === 'submitted' && (
             <div className="flex justify-start mb-4">
               <Card className="bg-muted text-muted-foreground px-4 py-3 max-w-[70%] shadow-sm">
                 <div className="flex items-center space-x-1">

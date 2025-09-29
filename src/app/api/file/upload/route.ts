@@ -52,19 +52,22 @@ export async function POST(req: Request) {
       buffers.map((buffer) => PdfBufferToText(buffer))
     );
 
+    var resourceIds: string[] = [];
+
     // luu vao embedding va db
     for (const [i, text] of pdfTexts.entries()) {
       var result = await createResource(fileName[i], { content: text });
-      if (!result) {
+      if (!result?.success) {
         return Response.json(
           { message: "Failed to create resource from file" },
           { status: 500 }
         );
       }
+      resourceIds.push(result.resourceId ?? "");
     }
 
     return Response.json(
-      { message: "Uploaded", filename: fileName },
+      { message: "Uploaded", fileName , resourceIds },
       { status: 201 }
     );
   } catch (e) {

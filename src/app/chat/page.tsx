@@ -51,23 +51,29 @@ export default function ChatPage() {
 
   const handleAddSources = async (files: File[]) => {
     setIsUploading(true);
-    setUploadProgress(`Uploading ${files.length} file${files.length > 1 ? 's' : ''}...`);
+    setUploadProgress(`Processing ${files.length} file${files.length > 1 ? 's' : ''}...`);
     setUploadPercentage(5);
     
     try {
-      // Add sources to UI immediately with processing state
-      const newSources = files.map((file, index) => ({
-        id: `${Date.now()}-${index}`,
-        title: file.name,
+      // Upload and process files first
+      const data = await handleUpload(files);
+
+      // After successful upload, add sources to UI
+      setUploadProgress('Adding sources to interface...');
+      setUploadPercentage(95);
+      
+      const newSources = data.resourceIds.map((id: string, index: number) => ({
+        id: data.resourceIds[index],
+        title: data.fileName[index],
         checked: true,
       }));
-      setSources((prev) => [...prev, ...newSources]);
 
-      // Upload and process files
-      await handleUpload(files);
+      console.log('New sources added:', newSources);
+      setSources((prev) => [...prev, ...newSources]);
       
-      setUploadProgress('Files processed successfully!');
+      setUploadProgress('Complete!');
       setUploadPercentage(100);
+      
       setTimeout(() => {
         setIsUploading(false);
         setUploadProgress('');
@@ -86,15 +92,15 @@ export default function ChatPage() {
 
   const handleUpload = async (files: File[]) => {
     setUploadProgress('Preparing files...');
-    setUploadPercentage(15);
+    setUploadPercentage(10);
     
     const formData = new FormData();
     files.forEach((file) => {
       formData.append("files", file);
     });
 
-    setUploadProgress('Converting PDF to text...');
-    setUploadPercentage(35);
+    setUploadProgress('Uploading files...');
+    setUploadPercentage(25);
     
     const resp = await fetch("/api/file/upload", {
       method: "POST",
@@ -106,12 +112,11 @@ export default function ChatPage() {
       throw new Error(errorData.message || 'Upload failed');
     }
 
-    setUploadProgress('Creating embeddings...');
-    setUploadPercentage(70);
     const data = await resp.json();
     
-    setUploadProgress('Finalizing...');
+    setUploadProgress('Processing complete...');
     setUploadPercentage(90);
+    
     console.log('Upload successful:', data);
     
     return data;

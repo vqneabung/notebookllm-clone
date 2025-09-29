@@ -40,11 +40,11 @@ export const createResource = async (fileName: string, input: NewResourceParams)
 
     console.log("Resource and embeddings created with ID:", resource.id);
 
-    return true;
+    return { success: true, resourceId: resource.id };
   } catch (e) {
     if (e instanceof Error) {
       console.error("Error creating resource:", e.message);
-      return false;
+      return { success: false };
     }
   }
 };

@@ -14,38 +14,33 @@ interface EmptyStateProps {
 export default function EmptyState({ onAddSources, isUploading = false, uploadProgress = '', uploadPercentage = 0 }: EmptyStateProps) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   return (
-    <div className="h-full flex flex-col bg-gray-900">
+    <div className="h-full flex flex-col bg-background">
       {/* Header */}
-      <div className="flex-shrink-0 border-b border-gray-700 px-6 py-4">
-        <h1 className="text-lg font-medium text-white">Chat</h1>
+      <div className="flex-shrink-0 border-b border-border px-6 py-4">
+        <h1 className="text-lg font-medium text-foreground">Chat</h1>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center p-8">
         {/* Upload Icon */}
-        <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
-          <Upload className="w-6 h-6 text-white" />
+        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-6">
+          <Upload className="w-6 h-6 text-primary-foreground" />
         </div>
 
         {/* Title */}
-        <h2 className="text-xl font-medium mb-6 text-white">
+        <h2 className="text-xl font-medium mb-6 text-foreground">
           {isUploading ? "Processing your source..." : "Add a source to get started"}
         </h2>
 
         {/* Upload Progress or Button */}
         {isUploading ? (
-          <div className="w-full max-w-md">
-            <div className="flex items-center justify-center gap-3 text-gray-300 mb-4">
-              <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-              <span className="text-sm">{uploadProgress}</span>
-              <span className="text-xs">{uploadPercentage}%</span>
-            </div>
-            <Progress value={uploadPercentage} className="h-2 bg-gray-700" />
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <div className="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full"></div>
+            <span className="text-sm">Processing files...</span>
           </div>
         ) : (
           <Button 
             variant="outline" 
-            className="bg-transparent border-gray-600 text-white hover:bg-gray-700 hover:text-white"
             onClick={() => setIsUploadModalOpen(true)}
           >
             Upload a source
@@ -54,20 +49,31 @@ export default function EmptyState({ onAddSources, isUploading = false, uploadPr
       </div>
 
       {/* Input Area */}
-      <div className="flex-shrink-0 border-t border-gray-700 p-4">
+      <div className="flex-shrink-0 border-t border-border p-4">
         <div className="max-w-4xl mx-auto">
+          {/* Upload Progress Indicator - only show when uploading */}
+          {isUploading && (
+            <div className="mb-4 p-4 bg-muted rounded-lg border border-border">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                <span className="text-sm text-muted-foreground">{uploadProgress}</span>
+                <span className="text-xs text-muted-foreground ml-auto">{uploadPercentage}%</span>
+              </div>
+              <Progress value={uploadPercentage} className="h-2" />
+            </div>
+          )}
+          
           <div className="relative">
             <input
-              placeholder="Upload a source to get started"
-              className="w-full px-4 py-3 pr-20 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder={isUploading ? "Processing files..." : "Upload a source to get started"}
+              className="w-full px-4 py-3 pr-20 bg-background border border-input rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               disabled
             />
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-              <span className="text-xs text-gray-400">0 sources</span>
+              <span className="text-xs text-muted-foreground">0 sources</span>
               <Button 
                 size="sm"
                 disabled
-                className="bg-blue-600 hover:bg-blue-700"
               >
                 <Upload className="w-4 h-4" />
               </Button>
